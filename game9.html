@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reaction Time Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: #f0f0f0;
+        }
+        .game-container {
+            text-align: center;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .reaction-button {
+            padding: 20px 40px;
+            font-size: 18px;
+            color: #fff;
+            background: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .reaction-button.ready {
+            background: #28a745;
+        }
+        .reaction-button.waiting {
+            background: #dc3545;
+        }
+        .reaction-button.clicked {
+            background: #17a2b8;
+        }
+        .game-info {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+        .game-over {
+            display: none;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .game-over button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            background: #e74c3c;
+            color: #fff;
+            cursor: pointer;
+        }
+        .game-over button:hover {
+            background: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-info">
+            <div>Reaction Time: <span id="reactionTime">0</span> ms</div>
+        </div>
+        <button class="reaction-button" id="reactionButton">Click Me!</button>
+    </div>
+    <div class="game-over" id="gameOver">
+        <h1>Game Over</h1>
+        <p>Your Reaction Time: <span id="finalTime">0</span> ms</p>
+        <button onclick="startNewGame()">Play Again</button>
+    </div>
+
+    <script>
+        const button = document.getElementById('reactionButton');
+        const reactionTimeDisplay = document.getElementById('reactionTime');
+        const finalTimeDisplay = document.getElementById('finalTime');
+        const gameOver = document.getElementById('gameOver');
+        let startTime, endTime;
+        let waitingTime;
+
+        function startGame() {
+            reactionTimeDisplay.textContent = '0';
+            gameOver.style.display = 'none';
+            button.classList.remove('clicked');
+            button.classList.add('waiting');
+            button.textContent = 'Wait for Green...';
+            waitingTime = Math.floor(Math.random() * 3000) + 2000; // Between 2 and 5 seconds
+
+            setTimeout(() => {
+                button.classList.remove('waiting');
+                button.classList.add('ready');
+                button.textContent = 'Click Now!';
+                startTime = Date.now();
+            }, waitingTime);
+        }
+
+        button.addEventListener('click', () => {
+            if (button.classList.contains('ready')) {
+                endTime = Date.now();
+                const reactionTime = endTime - startTime;
+                reactionTimeDisplay.textContent = reactionTime;
+                finalTimeDisplay.textContent = reactionTime;
+                button.classList.remove('ready');
+                button.classList.add('clicked');
+                button.textContent = 'You Clicked!';
+                setTimeout(() => {
+                    gameOver.style.display = 'block';
+                }, 1000);
+            } else if (button.classList.contains('waiting')) {
+                alert('Too Soon! Wait for the button to turn green.');
+            }
+        });
+
+        function startNewGame() {
+            startGame();
+        }
+
+        // Start the game on page load
+        startGame();
+    </script>
+</body>
+</html>
